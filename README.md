@@ -11,24 +11,26 @@ and target types can convert differently depending on the context supplied.
 ## Example
 
 ```rust
-use carry::{Carry, CarryAsync};
+use carry::Carry;
 
-struct Exchange; // context holds live rates
+struct Converter {
+    km_per_mile: f64,
+}
 
-struct Rial(i64);
-struct Dollar(f64);
+struct Kilometers(f64);
+struct Miles(f64);
 
-impl Carry<Exchange, Dollar, Rial> for Rial {
+impl Carry<Converter, Kilometers, Miles> for Miles {
     type Error = std::convert::Infallible;
 
-    fn carry(_context: &Exchange, from: Dollar) -> Result<Self, Self::Error> {
-        Ok(Rial((from.0 * 42_000.0).round() as i64))
+    fn carry(context: &Converter, from: Kilometers) -> Result<Self, Self::Error> {
+        Ok(Miles(from.0 / context.km_per_mile))
     }
 }
 
-let ctx = Exchange;
-let rial: Rial = Rial::carry(&ctx, Dollar(1.0)).unwrap();
-assert_eq!(rial.0, 42_000);
+let ctx = Converter { km_per_mile: 1.609 };
+let miles: Miles = Miles::carry(&ctx, Kilometers(10.0)).unwrap();
+assert!((miles.0 - 6.215).abs() < 0.001);
 ```
 
 ## Traits
