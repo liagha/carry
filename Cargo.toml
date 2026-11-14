@@ -3,13 +3,13 @@ name = "carry"
 version = "0.1.0"
 edition = "2024"
 
-[lib]
-name = "carry"
-path = "src/lib.rs"
-
 description = "Context-aware conversion traits Carry and CarryAsync"
 license = "MIT"
 repository = "https://github.com/liagha/carry"
 readme = "README.md"
 keywords = ["conversion", "cast", "context", "async"]
 categories = ["algorithms"]
+
+[lib]
+name = "carry"
+path = "src/lib.rs"
